@@ -27,11 +27,11 @@ const vendedorSchema = new mongoose.Schema({
   },
   cpf: {
     type: String,
-    required: true,
+    default: null,
   },
   cnpj: {
     type: String,
-    required: true,
+    default: null,
   },
 });
 

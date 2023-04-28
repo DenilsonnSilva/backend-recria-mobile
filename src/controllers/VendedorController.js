@@ -24,8 +24,8 @@ module.exports = {
           descricaoDeVenda,
           endereco,
           pessoaJuridica,
-          cpf,
-          cnpj,
+          cpf: this.pessoaJuridica ? null : cpf,
+          cnpj: this.pessoaJuridica ? cnpj : null,
         });
         return { message: newVendedor, status: 200 };
       } else {

@@ -24,8 +24,8 @@ module.exports = {
           descricaoDeCompra,
           endereco,
           pessoaJuridica,
-          cpf,
-          cnpj,
+          cpf: this.pessoaJuridica ? null : cpf,
+          cnpj: this.pessoaJuridica ? cnpj : null,
         });
         return { message: newComprador, status: 200 };
       } else {
