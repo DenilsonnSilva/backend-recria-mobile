@@ -1,6 +1,6 @@
 const express = require("express");
 const VendedorController = require("../controllers/VendedorController");
-const VendedorAuth = require("../middlewares/VendedorAuth");
+const UserAuth = require("../middlewares/UserAuth");
 const router = express.Router();
 
 // Cadastro do vendedor
@@ -27,9 +27,7 @@ router.post("/signup", async (req, res) => {
       cpf,
       cnpj
     );
-    return res
-      .status(response.status)
-      .json({ message: response.message, status: response.status });
+    return res.status(response.status).json(response);
   } catch (error) {
     return res.status(400).json({ message: error, error: 400 });
   }

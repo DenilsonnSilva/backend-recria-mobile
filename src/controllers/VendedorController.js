@@ -15,27 +15,51 @@ module.exports = {
     cnpj
   ) {
     try {
-      const findVendedor = await Vendedor.findOne({ cpf });
-      if (!findVendedor) {
-        const newVendedor = await Vendedor.signup({
-          nome,
-          email,
-          senha: bcript.hashSync(senha, 8),
-          descricaoDeVenda,
-          endereco,
-          pessoaJuridica,
-          cpf: this.pessoaJuridica ? null : cpf,
-          cnpj: this.pessoaJuridica ? cnpj : null,
-        });
-        return { message: newVendedor, status: 200 };
+      if (pessoaJuridica) {
+        const findVendedor = await Vendedor.findOne({ cnpj });
+        if (!findVendedor) {
+          const newVendedor = await Vendedor.create({
+            nome,
+            email,
+            senha: bcript.hashSync(senha, 8),
+            descricaoDeVenda,
+            endereco,
+            pessoaJuridica,
+            cpf: null,
+            cnpj,
+          });
+
+          return { message: newVendedor, status: 200 };
+        } else {
+          return {
+            message: "Um vendedor com esse CNPJ já está cadastrado",
+            status: 400,
+          };
+        }
       } else {
-        return {
-          message: "Um vendedor com esse CPF já está cadastrado",
-          status: 400,
-        };
+        const findVendedor = await Vendedor.findOne({ cpf });
+        if (!findVendedor) {
+          const newVendedor = await Vendedor.create({
+            nome,
+            email,
+            senha: bcript.hashSync(senha, 8),
+            descricaoDeVenda,
+            endereco,
+            pessoaJuridica,
+            cpf,
+            cnpj: null,
+          });
+
+          return { message: newVendedor, status: 200 };
+        } else {
+          return {
+            message: "Um vendedor com esse CPF já está cadastrado",
+            status: 400,
+          };
+        }
       }
     } catch (error) {
-      return { message: error, status: 400 };
+      return { message: error.message, status: 400 };
     }
   },
   async signin(cpf, senha) {
@@ -59,7 +83,7 @@ module.exports = {
         }
       }
     } catch (error) {
-      return { message: error, status: 400 };
+      return { message: error.message, status: 400 };
     }
   },
 };

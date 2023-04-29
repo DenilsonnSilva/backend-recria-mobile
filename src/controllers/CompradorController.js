@@ -17,15 +17,15 @@ module.exports = {
     try {
       const findComprador = await Comprador.findOne({ cpf });
       if (!findComprador) {
-        const newComprador = await Comprador.signup({
+        const newComprador = await Comprador.create({
           nome,
           email,
           senha: bcript.hashSync(senha, 8),
           descricaoDeCompra,
           endereco,
           pessoaJuridica,
-          cpf: this.pessoaJuridica ? null : cpf,
-          cnpj: this.pessoaJuridica ? cnpj : null,
+          cpf: (this.pessoaJuridica = true ? null : cpf),
+          cnpj: (this.pessoaJuridica = true ? cnpj : null),
         });
         return { message: newComprador, status: 200 };
       } else {
@@ -35,7 +35,7 @@ module.exports = {
         };
       }
     } catch (error) {
-      return { message: error, status: 400 };
+      return { message: error.message, status: 400 };
     }
   },
   async signin(cpf, senha) {
@@ -59,7 +59,7 @@ module.exports = {
         }
       }
     } catch (error) {
-      return { message: error, status: 400 };
+      return { message: error.message, status: 400 };
     }
   },
 };

@@ -18,6 +18,14 @@ mongoose.connect(process.env.MONGO_URL, {
   useUnifiedTopology: true,
 });
 
+// Roteamento
+const vendedorRoutes = require("./src/routes/VendedorRoutes");
+const compradorRoutes = require("./src/routes/CompradorRoutes");
+
+// Definindo as URLs
+app.use("/vendedor", vendedorRoutes);
+app.use("/comprador", compradorRoutes);
+
 app.listen(PORT, () => {
-  console.log("Running server");
+  console.log(`Running server on port ${PORT}`);
 });

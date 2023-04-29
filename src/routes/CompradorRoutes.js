@@ -1,6 +1,6 @@
 const express = require("express");
 const CompradorController = require("../controllers/CompradorController");
-const CompradorAuth = require("../middlewares/CompradorAuth");
+const UserAuth = require("../middlewares/UserAuth");
 const router = express.Router();
 
 // Cadastro do comprador
