@@ -15,34 +15,64 @@ module.exports = {
     cnpj
   ) {
     try {
-      const findComprador = await Comprador.findOne({ cpf });
-      if (!findComprador) {
-        const newComprador = await Comprador.create({
-          nome,
-          email,
-          senha: bcript.hashSync(senha, 8),
-          descricaoDeCompra,
-          endereco,
-          pessoaJuridica,
-          cpf: (this.pessoaJuridica = true ? null : cpf),
-          cnpj: (this.pessoaJuridica = true ? cnpj : null),
-        });
-        return { message: newComprador, status: 200 };
+      if (pessoaJuridica) {
+        const findComprador = await Comprador.findOne({ cnpj });
+        if (!findComprador) {
+          const newComprador = await Comprador.create({
+            nome,
+            email,
+            senha: bcript.hashSync(senha, 8),
+            descricaoDeCompra,
+            endereco,
+            pessoaJuridica,
+            cpf: null,
+            cnpj,
+          });
+
+          return { message: newComprador, status: 200 };
+        } else {
+          return {
+            message: "Um comprador com esse CNPJ já está cadastrado",
+            status: 400,
+          };
+        }
       } else {
-        return {
-          message: "Um comprador com esse CPF já está cadastrado",
-          status: 400,
-        };
+        const findComprador = await Comprador.findOne({ cpf });
+        if (!findComprador) {
+          const newComprador = await Comprador.create({
+            nome,
+            email,
+            senha: bcript.hashSync(senha, 8),
+            descricaoDeCompra,
+            endereco,
+            pessoaJuridica,
+            cpf,
+            cnpj: null,
+          });
+
+          return { message: newComprador, status: 200 };
+        } else {
+          return {
+            message: "Um comprador com esse CPF já está cadastrado",
+            status: 400,
+          };
+        }
       }
     } catch (error) {
       return { message: error.message, status: 400 };
     }
   },
-  async signin(cpf, senha) {
+  async signin(identification, senha) {
     try {
-      const foundComprador = await Comprador.findOne({ cpf });
+      const foundComprador = await Comprador.findOne({
+        $or: [
+          { email: identification },
+          { cpf: identification },
+          { cnpj: identification },
+        ],
+      });
       if (!foundComprador) {
-        return { message: "CPF não encontrado", status: 400 };
+        return { message: "Usuário não encontrado", status: 400 };
       } else {
         const passwordMatch = await bcript.compare(senha, foundComprador.senha);
 

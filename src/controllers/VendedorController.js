@@ -62,11 +62,17 @@ module.exports = {
       return { message: error.message, status: 400 };
     }
   },
-  async signin(cpf, senha) {
+  async signin(identification, senha) {
     try {
-      const foundVendedor = await Vendedor.findOne({ cpf });
+      const foundVendedor = await Vendedor.findOne({
+        $or: [
+          { email: identification },
+          { cpf: identification },
+          { cnpj: identification },
+        ],
+      });
       if (!foundVendedor) {
-        return { message: "CPF não encontrado", status: 400 };
+        return { message: "Usuário não encontrado", status: 400 };
       } else {
         const passwordMatch = await bcript.compare(senha, foundVendedor.senha);
 

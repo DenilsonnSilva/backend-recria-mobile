@@ -36,12 +36,10 @@ router.post("/signup", async (req, res) => {
 // Login do vendedor
 router.post("/signin", async (req, res) => {
   try {
-    const { cpf, senha } = req.body;
+    const { identification, senha } = req.body;
 
-    const result = await VendedorController.signin(cpf, senha);
-    return res
-      .status(result.status)
-      .json({ message: result.message, status: result.status });
+    const result = await VendedorController.signin(identification, senha);
+    return res.status(result.status).json(result);
   } catch (error) {
     return res.status(400).json({ message: error, error: 400 });
   }
